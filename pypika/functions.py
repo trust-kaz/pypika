@@ -122,6 +122,20 @@ class Cast(Function):
 
         return "AS {type}".format(type=type_sql)
 
+class SafeCast(Function):
+    def __init__(self, term, as_type, alias=None):
+        super(SafeCast, self).__init__("SAFE_CAST", term, alias=alias)
+        self.as_type = as_type
+
+    def get_special_params_sql(self, **kwargs):
+        type_sql = (
+            self.as_type.get_sql(**kwargs)
+            if hasattr(self.as_type, "get_sql")
+            else str(self.as_type).upper()
+        )
+
+        return "AS {type}".format(type=type_sql)
+
 
 class Convert(Function):
     def __init__(self, term, encoding, alias=None):
